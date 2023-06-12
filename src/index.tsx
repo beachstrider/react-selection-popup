@@ -35,6 +35,10 @@ interface ReactSelectionPopupProps {
    * The offset (in pixels) to the top direction of the screen to reposition the popup. The default pivot y is bottom of the pop.
    */
   offsetToTop?: number
+  /**
+   * The rest properties.
+   */
+  [key: string]: any
 }
 
 type Size = {
@@ -66,7 +70,8 @@ const ReactSelectionPopup = ({
   multipleSelection = true,
   metaAttrName,
   offsetToLeft = 0,
-  offsetToTop = 0
+  offsetToTop = 0,
+  ...rest
 }: ReactSelectionPopupProps) => {
   const [size, setSize] = useState<Size>({ width: 0, height: 0 })
   const [position, setPosition] = useState<Position | null>(null)
@@ -153,7 +158,9 @@ const ReactSelectionPopup = ({
 
   return (
     <div style={{ position: 'fixed', left, top }}>
-      <div ref={ref}>{children}</div>
+      <div ref={ref} {...rest}>
+        {children}
+      </div>
     </div>
   )
 }
