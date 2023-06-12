@@ -11,8 +11,12 @@ const App = () => {
         offsetToTop={5}
         metaAttrName="data-meta"
         onSelect={(text, meta) => console.debug(text, meta)}
+        onClose={() => false}
       >
-        <div style={{ background: 'yellow' }}>Sample Popup</div>
+        <div style={{ background: 'yellow' }}>
+          Sample Popup
+          <button onClick={() => console.debug('clicked')}>Click Me</button>
+        </div>
       </ReactSelectionPopup>
       <p className="selection" data-meta={JSON.stringify({ explain: 'Test text' })}>
         Select some text to see the popup.

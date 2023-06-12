@@ -89,6 +89,21 @@ const ReactSelectionPopup = ({
 
   const ref = useRef<HTMLDivElement>(null)
 
+  const isPopupContent = (e: any) => {
+    let node: HTMLElement | null = e.target as HTMLElement
+
+    // Check if the target div is popup which is the exception case
+    while (node != null) {
+      if (node === ref.current) {
+        return true
+      }
+
+      node = node.parentNode as HTMLElement
+    }
+
+    return false
+  }
+
   useEffect(() => {
     window.addEventListener('mouseup', (e: any) => {
       const selection = window.getSelection()
@@ -123,30 +138,23 @@ const ReactSelectionPopup = ({
           }
         }
 
-        setPosition(null)
+        if (!isPopupContent(e)) {
+          setPosition(null)
+          onClose?.()
+        }
       }
     })
 
     window.addEventListener('mousedown', (e) => {
       const selection = window.getSelection()
 
-      let node: HTMLElement | null = e.target as HTMLElement
-
-      // Check if the target div is popup which is the exception case
-      while (node != null) {
-        if (node === ref.current) {
-          return
+      if (!isPopupContent(e)) {
+        if (selection !== null) {
+          selection.removeAllRanges()
         }
-
-        node = node.parentNode as HTMLElement
+        setPosition(null)
+        onClose?.()
       }
-
-      if (selection !== null) {
-        selection.removeAllRanges()
-      }
-
-      setPosition(null)
-      onClose?.()
     })
 
     window.addEventListener('scroll', () => {
