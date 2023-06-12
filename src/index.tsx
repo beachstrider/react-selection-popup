@@ -8,6 +8,10 @@ interface ReactSelectionPopupProps {
    */
   onSelect?: (text: string, meta?: string | number | boolean | object) => void
   /**
+   * This function is called when a popup is closed due to focus lost.
+   */
+  onClose?: () => void
+  /**
    * The child elements to be displayed within the popup component.
    */
   children: React.ReactNode
@@ -65,6 +69,7 @@ type Position = {
 
 const ReactSelectionPopup = ({
   onSelect,
+  onClose,
   children,
   selectionClassName,
   multipleSelection = true,
@@ -135,12 +140,14 @@ const ReactSelectionPopup = ({
       }
 
       setPosition(null)
+      onClose?.()
     })
 
     window.addEventListener('scroll', () => {
       setPosition(null)
+      onClose?.()
     })
-  }, [onSelect, multipleSelection, selectionClassName, metaAttrName])
+  }, [onSelect, onClose, multipleSelection, selectionClassName, metaAttrName])
 
   useEffect(() => {
     if (ref.current) {
