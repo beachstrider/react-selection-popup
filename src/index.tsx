@@ -6,7 +6,7 @@ interface ReactSelectionPopupProps {
    * @param text - The text of the selection
    * @param meta - Additional metadata associated with the selected text (optional)
    */
-  onSelect?: (text: string, meta?: string | number | boolean | object) => void
+  onSelect?: (text: string, meta?: any) => void
   /**
    * This function is called when a popup is closed due to focus lost.
    */
@@ -39,6 +39,12 @@ interface ReactSelectionPopupProps {
    * The offset (in pixels) to the top direction of the screen to reposition the popup. The default pivot y is bottom of the pop.
    */
   offsetToTop?: number
+
+  id?: string
+  className?: string
+  ref?: React.LegacyRef<HTMLDivElement>
+  style?: React.CSSProperties
+
   /**
    * The rest properties.
    */
