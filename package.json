@@ -1,6 +1,6 @@
 {
   "name": "react-selection-popup",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Simple, yet convenient React popup component that shows when you select texts.",
   "repository": {
     "type": "git",
