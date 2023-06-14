@@ -86,7 +86,6 @@ const ReactSelectionPopup: React.ForwardRefRenderFunction<HandleRef, ReactSelect
   ref
 ) => {
   const [size, setSize] = useState<Size>({ width: 0, height: 0 })
-  console.debug('---  size:', size)
   const [position, setPosition] = useState<Position | null>(null)
 
   const popupRef = useRef<HTMLDivElement>(null)
