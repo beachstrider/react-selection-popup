@@ -1,9 +1,9 @@
 import React, { useRef } from 'react'
 import ReactDOM from 'react-dom/client'
-import ReactSelectionPopup, { PopupHandle } from '../src'
+import ReactSelectionPopup, { PopupHandleRef } from '../src'
 
 const App = () => {
-  const ref = useRef<PopupHandle>(null)
+  const ref = useRef<PopupHandleRef>(null)
 
   return (
     <div style={{ padding: 20 }}>
@@ -27,9 +27,15 @@ const App = () => {
           </button>
         </div>
       </ReactSelectionPopup>
-      <p className="selection" data-meta={JSON.stringify({ explain: 'Test text' })}>
-        Select some text to see the popup.
-      </p>
+      <div>
+        <div>
+          <div>
+            <p className="selection" data-meta={JSON.stringify({ explain: 'Test text' })}>
+              Select some text to see the popup.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

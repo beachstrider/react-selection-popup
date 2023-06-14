@@ -67,11 +67,11 @@ type Position = {
   y: number
 }
 
-export interface PopupHandle {
+export interface PopupHandleRef {
   close: () => void
 }
 
-const ReactSelectionPopup: React.ForwardRefRenderFunction<PopupHandle, ReactSelectionPopupProps> = (
+const ReactSelectionPopup: React.ForwardRefRenderFunction<PopupHandleRef, ReactSelectionPopupProps> = (
   {
     onSelect,
     onClose,
@@ -86,13 +86,13 @@ const ReactSelectionPopup: React.ForwardRefRenderFunction<PopupHandle, ReactSele
   ref
 ) => {
   const [size, setSize] = useState<Size>({ width: 0, height: 0 })
+  console.debug('---  size:', size)
   const [position, setPosition] = useState<Position | null>(null)
 
+  const popupRef = useRef<HTMLDivElement>(null)
   const positionRef = useRef<Position | null>(null)
 
   positionRef.current = position
-
-  const popupRef = useRef<HTMLDivElement>(null)
 
   const isPopupContent = useCallback((e: any) => {
     let node: HTMLElement | null = e.target as HTMLElement
@@ -188,7 +188,7 @@ const ReactSelectionPopup: React.ForwardRefRenderFunction<PopupHandle, ReactSele
     }
   }, [children, position, popupRef])
 
-  useImperativeHandle(ref, (): PopupHandle => {
+  useImperativeHandle(ref, (): PopupHandleRef => {
     return {
       close
     }
@@ -200,7 +200,7 @@ const ReactSelectionPopup: React.ForwardRefRenderFunction<PopupHandle, ReactSele
   const top = position.y - size.height - offsetToTop
 
   return (
-    <div style={{ position: 'fixed', left, top }}>
+    <div style={{ position: 'fixed', left, top, zIndex: 9999 }}>
       <div ref={popupRef} {...rest}>
         {children}
       </div>
