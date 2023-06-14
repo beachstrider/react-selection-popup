@@ -1,9 +1,9 @@
 import React, { useRef } from 'react'
 import ReactDOM from 'react-dom/client'
-import ReactSelectionPopup, { PopupHandleRef } from '../src'
+import ReactSelectionPopup, { HandleRef } from '../src'
 
 const App = () => {
-  const ref = useRef<PopupHandleRef>(null)
+  const ref = useRef<HandleRef>(null)
 
   return (
     <div style={{ padding: 20 }}>
@@ -16,8 +16,8 @@ const App = () => {
         onSelect={(text, meta) => console.debug(text, meta)}
         onClose={() => false}
       >
-        <div style={{ background: 'yellow' }}>
-          Sample Popup
+        <div style={{ background: 'yellow', display: 'flex', gap: 20 }}>
+          <div>Sample Popup</div>
           <button
             onClick={() => {
               ref.current?.close()

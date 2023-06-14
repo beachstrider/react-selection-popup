@@ -67,11 +67,11 @@ type Position = {
   y: number
 }
 
-export interface PopupHandleRef {
+export interface HandleRef {
   close: () => void
 }
 
-const ReactSelectionPopup: React.ForwardRefRenderFunction<PopupHandleRef, ReactSelectionPopupProps> = (
+const ReactSelectionPopup: React.ForwardRefRenderFunction<HandleRef, ReactSelectionPopupProps> = (
   {
     onSelect,
     onClose,
@@ -188,7 +188,7 @@ const ReactSelectionPopup: React.ForwardRefRenderFunction<PopupHandleRef, ReactS
     }
   }, [children, position, popupRef])
 
-  useImperativeHandle(ref, (): PopupHandleRef => {
+  useImperativeHandle(ref, (): HandleRef => {
     return {
       close
     }
