@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 interface ReactSelectionPopupProps {
   /**
@@ -12,7 +12,7 @@ interface ReactSelectionPopupProps {
    */
   onClose?: () => void
   /**
-   * The child elements to be displayed within the popup component.
+   * This function returns a function to close a popup.
    */
   children: React.ReactNode
   /**
@@ -42,13 +42,7 @@ interface ReactSelectionPopupProps {
 
   id?: string
   className?: string
-  ref?: React.LegacyRef<HTMLDivElement>
   style?: React.CSSProperties
-
-  /**
-   * The rest properties.
-   */
-  [key: string]: any
 }
 
 type Size = {
@@ -73,28 +67,39 @@ type Position = {
   y: number
 }
 
-const ReactSelectionPopup = ({
-  onSelect,
-  onClose,
-  children,
-  selectionClassName,
-  multipleSelection = true,
-  metaAttrName,
-  offsetToLeft = 0,
-  offsetToTop = 0,
-  ...rest
-}: ReactSelectionPopupProps) => {
+export interface PopupHandle {
+  close: () => void
+}
+
+const ReactSelectionPopup: React.ForwardRefRenderFunction<PopupHandle, ReactSelectionPopupProps> = (
+  {
+    onSelect,
+    onClose,
+    children,
+    selectionClassName,
+    multipleSelection = true,
+    metaAttrName,
+    offsetToLeft = 0,
+    offsetToTop = 0,
+    ...rest
+  },
+  ref
+) => {
   const [size, setSize] = useState<Size>({ width: 0, height: 0 })
   const [position, setPosition] = useState<Position | null>(null)
 
-  const ref = useRef<HTMLDivElement>(null)
+  const positionRef = useRef<Position | null>(null)
 
-  const isPopupContent = (e: any) => {
+  positionRef.current = position
+
+  const popupRef = useRef<HTMLDivElement>(null)
+
+  const isPopupContent = useCallback((e: any) => {
     let node: HTMLElement | null = e.target as HTMLElement
 
     // Check if the target div is popup which is the exception case
     while (node != null) {
-      if (node === ref.current) {
+      if (node === popupRef.current) {
         return true
       }
 
@@ -102,10 +107,15 @@ const ReactSelectionPopup = ({
     }
 
     return false
-  }
+  }, [])
+
+  const close = useCallback(() => {
+    setPosition(null)
+    onClose?.()
+  }, [onClose])
 
   useEffect(() => {
-    window.addEventListener('mouseup', (e: any) => {
+    const onMouseUp = (e: any) => {
       const selection = window.getSelection()
       if (selection !== null) {
         const { anchorNode, focusNode } = selection
@@ -127,50 +137,62 @@ const ReactSelectionPopup = ({
 
                     setPosition({ x, y })
                     onSelect?.(text, meta)
-
                     return
                   } else {
                     selection.removeAllRanges()
                   }
                 }
               }
+
+              if (!isPopupContent(e)) {
+                close()
+              }
+            } else {
+              setPosition(null)
             }
           }
         }
-
-        if (!isPopupContent(e)) {
-          setPosition(null)
-          onClose?.()
-        }
       }
-    })
+    }
 
-    window.addEventListener('mousedown', (e) => {
+    const onMousedown = (e: any) => {
       const selection = window.getSelection()
 
-      if (!isPopupContent(e)) {
-        if (selection !== null) {
-          selection.removeAllRanges()
-        }
-        setPosition(null)
-        onClose?.()
+      if (!isPopupContent(e) && positionRef.current !== null && selection !== null) {
+        selection.removeAllRanges()
+        close()
       }
-    })
+    }
 
-    window.addEventListener('scroll', () => {
-      setPosition(null)
-      onClose?.()
-    })
-  }, [onSelect, onClose, multipleSelection, selectionClassName, metaAttrName])
+    const onScroll = () => {
+      close()
+    }
+
+    window.addEventListener('mouseup', onMouseUp)
+    window.addEventListener('mousedown', onMousedown)
+    window.addEventListener('scroll', onScroll)
+
+    return () => {
+      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('mousedown', onMousedown)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [close, onSelect, onClose, isPopupContent, position, multipleSelection, selectionClassName, metaAttrName])
 
   useEffect(() => {
-    if (ref.current) {
-      const width = ref.current.offsetWidth
-      const height = ref.current.offsetHeight
+    if (popupRef.current) {
+      const width = popupRef.current.offsetWidth
+      const height = popupRef.current.offsetHeight
 
       setSize({ width, height })
     }
-  }, [children, position])
+  }, [children, position, popupRef])
+
+  useImperativeHandle(ref, (): PopupHandle => {
+    return {
+      close
+    }
+  })
 
   if (position === null) return <></>
 
@@ -179,11 +201,11 @@ const ReactSelectionPopup = ({
 
   return (
     <div style={{ position: 'fixed', left, top }}>
-      <div ref={ref} {...rest}>
+      <div ref={popupRef} {...rest}>
         {children}
       </div>
     </div>
   )
 }
 
-export default ReactSelectionPopup
+export default React.forwardRef(ReactSelectionPopup)

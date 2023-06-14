@@ -22,19 +22,26 @@ yarn add react-selection-popup
 To use React Selection Popup, you need to import it into your project and then wrap the content you want to make selectable inside the component. Here's an example:
 
 ```jsx
-import React from 'react';
-import ReactSelectionPopup from 'react-selection-popup';
+import React, { useRef } from 'react';
+import ReactSelectionPopup, { PopupHandle } from 'react-selection-popup';
 
 const App = () => {
+  const ref = useRef<PopupHandle>(null)
+
   return (
     <div>
       <ReactSelectionPopup
+        ref={ref}
         selectionClassName="selection"
-        onSelect={(text) => console.debug(text)}
+        metaAttrName="data-meta"
+        onSelect={(text, meta) => console.debug(text, meta)}
       >
-        <div>Popup Content</div>
+        <div>
+          <p>Popup Content</p>
+          <button onClick={() => { ref.current?.close() }}>Close</button>
+        </div>
       </ReactSelectionPopup>
-      <p className="selection">
+      <p className="selection" data-meta={JSON.stringify({ explain: "Test metadata" })}>
         Select me to see the popup.
       </p>
     </div>
@@ -42,12 +49,13 @@ const App = () => {
 };
 ```
 
-In this example, we have a simple React component with two elements. The first element is the `ReactSelectionPopup` component, which wraps the second element. The second element is a `p` tag that has the class name 'selection' and a data attribute 'data-meta'. When the user selects the text inside this `p` tag, the popup defined in the `ReactSelectionPopup` component will appear.
+In this example, we have a simple React component with two elements. The first element is the `ReactSelectionPopup` component, which wraps the content of the popup. The second element is a `p` tag that has the class name `selection` and a data attribute `data-meta` to set a metadata. When the user selects the text inside this `p` tag, the popup defined in the `ReactSelectionPopup` component will appear.
 
 ## Props
 
 | name | type | description |
 | --- | ---- | --- |
+| `ref` | `{ current?: { close: () => void } }` | The Ref of popup handler that returns function `close` to force the popup to be closed. |
 | `onSelect`  | `(text: string, meta?: any) => void` | This is an optional function property that takes two parameters: a string representing the selected text and an optional parameter metadata, which could be a boolean, string, number or object. The function is called when a user selects text in HTML. |
 | `children`     | `React.ReactNode` | __required__ This property is required and represents child elements to be displayed within the component. |
 | `selectionClassName`     | `string` | __required__ This property is required and specifies the class name used to identify selectable element(s). |

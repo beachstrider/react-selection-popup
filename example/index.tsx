@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import ReactDOM from 'react-dom/client'
-import ReactSelectionPopup from '../src'
+import ReactSelectionPopup, { PopupHandle } from '../src'
 
 const App = () => {
+  const ref = useRef<PopupHandle>(null)
+
   return (
     <div style={{ padding: 20 }}>
       <ReactSelectionPopup
+        ref={ref}
         selectionClassName="selection"
         multipleSelection={false}
         offsetToTop={5}
@@ -15,7 +18,13 @@ const App = () => {
       >
         <div style={{ background: 'yellow' }}>
           Sample Popup
-          <button onClick={() => console.debug('clicked')}>Click Me</button>
+          <button
+            onClick={() => {
+              ref.current?.close()
+            }}
+          >
+            Click Me
+          </button>
         </div>
       </ReactSelectionPopup>
       <p className="selection" data-meta={JSON.stringify({ explain: 'Test text' })}>
