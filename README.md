@@ -1,3 +1,5 @@
+[![NPM](https://img.shields.io/npm/v/react-selection-popup.svg)](https://www.npmjs.com/package/react-selection-popup) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
 # React Selection Popup
 
 
