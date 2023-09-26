@@ -5,7 +5,7 @@
 
 ![image](https://github.com/jasonmz/react-selection-popup/assets/48445639/a4359e07-65b1-4e29-b852-fbc3e449d86e)
 
-React Selection Popup is an npm package that allows you to show a popup when a user selects text in html. The package is built on top of React and provides an easy-to-use API for developers who want to add selection popups to their projects.
+React Selection Popup is an npm package that allows you to show a popup when a user selects text contents in jsx elements like div. The package is built on top of React and provides an easy-to-use API for developers who want to add selection popups to their projects.
 
 ## Installation
 
